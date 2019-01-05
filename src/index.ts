@@ -1,11 +1,10 @@
-import { DefaultValue, NotRequired, Required } from './fields/mixed';
+import { DefaultValue, Required } from './fields/mixed';
 import { MinStringLength, MaxStringLength } from './fields/string';
 import { MinArrayLength, MaxArrayLength } from './fields/array';
 
 const validator = {
   mixed: {
     default: DefaultValue,
-    notRequired: NotRequired,
     required: Required,
   },
   string: {

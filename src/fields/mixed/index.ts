@@ -1,14 +1,18 @@
 import * as iots from 'io-ts';
 export { Required } from './required';
 
-export const DefaultValue = (defaultValue: string) => new iots.Type(
-  'DefaultValue',
-  iots.any.is,
-  (value: any) => {
-    const newValue = value === undefined ? defaultValue : value;
-    return iots.success(newValue);
-  },
-  iots.any.encode,
-);
+export const DefaultValue = <T extends iots.Any>(
+  type: T,
+  defaultValue: iots.TypeOf<T>,
+) => {
+  return new iots.Type<iots.TypeOf<T>, iots.OutputOf<T>>(
+    'DefaultValue',
+    type.is,
+    (value, c) => {
+      const newValue = value === undefined ? defaultValue : value;
 
-export const NotRequired = <T extends iots.Type<any>>(type: T) => iots.union([type, iots.undefined]);
+      return type.validate(newValue, c);
+    },
+    type.encode,
+  );
+};

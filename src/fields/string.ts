@@ -1,17 +1,15 @@
 import * as iots from 'io-ts';
-import { NotRequired } from './mixed';
 import { addErrorToContext } from './utils';
 
-type NotRequiredStringType = string | undefined;
+const union = [iots.string, iots.undefined];
+const stringOrUndefined = iots.union(union);
+type NotRequiredStringType = iots.TypeOf<typeof stringOrUndefined>;
 
-const encoder = (value: NotRequiredStringType) => value === undefined ? value : String(value);
-const guard = NotRequired(iots.string).is;
-
-export const MaxStringLength = (max: number) => new iots.Type(
+export const MaxStringLength = (max: number) => new iots.UnionType(
   'MaxStringLength',
-  guard,
+  stringOrUndefined.is,
   (value: NotRequiredStringType, context) => {
-    const valid = value === undefined || value.length <= max;
+    const valid = value !== undefined && value.length <= max;
     const newContext = addErrorToContext(
       context,
       context[context.length - 1].type,
@@ -21,14 +19,15 @@ export const MaxStringLength = (max: number) => new iots.Type(
 
     return valid ? iots.success(value) : iots.failure(value, newContext);
   },
-  encoder,
+  stringOrUndefined.encode,
+  union,
 );
 
-export const MinStringLength = (min: number) => new iots.Type(
+export const MinStringLength = (min: number) => new iots.UnionType(
   'MinStringLength',
-  guard,
+  stringOrUndefined.is,
   (value: NotRequiredStringType, context) => {
-    const valid = value === undefined || value.length >= min;
+    const valid = value !== undefined && value.length >= min;
     const newContext = addErrorToContext(
       context,
       context[context.length - 1].type,
@@ -38,5 +37,6 @@ export const MinStringLength = (min: number) => new iots.Type(
 
     return valid ? iots.success(value) : iots.failure(value, newContext);
   },
-  encoder,
+  stringOrUndefined.encode,
+  union,
 );
