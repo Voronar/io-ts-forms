@@ -1,5 +1,5 @@
 {
-  "name": "@gostgroup/use-redux",
+  "name": "io-ts-forms",
   "version": "1.0.3",
   "description": "React hooks (still in preview) for redux integration",
   "files": [
@@ -19,33 +19,30 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gostgroup/use-redux.git"
+    "url": "git+https://github.com/Voronar/io-ts-forms.git"
   },
   "keywords": [
     "react",
     "redux",
     "typescript"
   ],
-  "author": "GostGroup frontend team",
+  "author": "Kirill Alexander Khalitov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gostgroup/use-redux/issues"
+    "url": "https://github.com/Voronar/io-ts-forms/issues"
   },
-  "homepage": "https://github.com/gostgroup/use-redux#readme",
+  "homepage": "https://github.com/Voronar/io-ts-forms#readme",
   "dependencies": {
-    "@types/react": "^16.7.18",
-    "@types/react-dom": "^16.0.11",
-    "@types/shallowequal": "^0.2.3",
-    "react": "16.7.0-alpha.2",
-    "react-dom": "16.7.0-alpha.2",
-    "redux": "^4.0.0",
-    "shallowequal": "^1.1.0"
+    "io-ts": "^1.5.1"
   },
   "devDependencies": {
-    "@types/redux-logger": "^3.0.6",
+    "@types/ramda": "^0.25.46",
     "cross-env": "^5.1.6",
+    "moment": "^2.23.0",
     "parcel-bundler": "^1.8.1",
-    "redux-logger": "^3.0.6",
+    "ramda": "^0.26.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "tslint": "^5.10.0",
     "tslint-config-airbnb": "^5.9.2",
     "typescript": "^3.2.2"

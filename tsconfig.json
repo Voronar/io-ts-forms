@@ -4,9 +4,9 @@
     "target": "es5",
     "outDir": "lib",
     "declaration": true,
-    "declarationDir": "lib/types",
     "moduleResolution": "node",
     "strict": true,
+    "baseUrl": "src",
     "jsx": "react",
     "noImplicitAny": true,
     "noUnusedLocals": true,
@@ -24,6 +24,7 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/backup"
   ]
 }
