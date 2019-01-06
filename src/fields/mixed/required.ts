@@ -3,9 +3,8 @@ import { addErrorToContext } from '../utils';
 
 const defaultCreateError = (field: string) => `Field '${field}' must be required`;
 
-export const Required = <T extends iots.Type<any>>(
+export const Required = (createError = defaultCreateError) => <T extends iots.Type<any>>(
   type: T,
-  createError = defaultCreateError,
 ) => new iots.Type<T['_A'], T['_O'], T['_I']>(
   'Required',
   type.is,

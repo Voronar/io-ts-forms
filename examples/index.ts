@@ -1,52 +1,65 @@
 import * as iots from 'io-ts';
 import { pipe } from 'ramda';
-import { validator } from '../src';
+import moment from 'moment';
+import { validator, modifiers } from '../src';
+
+const MomentDateTime = new iots.Type<moment.Moment, string>(
+  'MomentDateTime',
+  moment.isMoment,
+  (inputValue, c) =>
+    iots.string.validate(inputValue, c).chain((inputString) => {
+      const momentValue = moment(inputString);
+      return momentValue.isValid() ? iots.success(momentValue) : iots.failure(inputString, c);
+    }),
+  a => a.toISOString(),
+);
+
+console.log(MomentDateTime.encode(moment()));
 
 const Person = iots.type({
-  // TODO Make notRequired with default value
-  // name: validator.mixed.required(iots.string)
-    // .pipe(validator.string.max(4))
-    // .pipe(validator.string.min(2))
-  // ,
-  // email: validator.mixed.required(iots.string),
-  // phone: validator.mixed.required(iots.string),
-  // age: iots.number,
-  genderId: validator.mixed.required(iots.array(iots.number))
-    // .pipe(validator.array.min(1))
-    // .pipe(validator.array.max(3))
+  email: pipe(
+    modifiers.label('Email'),
+    modifiers.required(),
+  )(iots.string)
+    .pipe(validator.string.email())
+    .pipe(validator.string.max(15))
+    // .pipe(validator.string.regExpMatch(/.+@.+/))
   ,
-  // name: validator.mixed.required(iots.string).pipe(validator.string.min(4)),
-  gender: iots.partial({
-    name: (iots.string)
-      .pipe(validator.string.min(1))
-      .pipe(validator.string.max(5))
+  name: pipe(
+    modifiers.label('Имя'),
+    modifiers.default('Без имени'),
+    modifiers.notRequired,
+    )(iots.string)
     ,
-
-  }),
+  birthday: pipe(
+    // modifiers.notRequired,
+    // modifiers.default('2019-01-06'),
+    modifiers.required(),
+  )(MomentDateTime),
 });
 
-type p = iots.TypeOf<typeof Person>;
+type P = iots.TypeOf<typeof Person>;
 
-const val = {
-  // name: '1117',
-  // age: 1,
-  genderId: [2, 3, 3],
-  gender: {
-    name: '123456',
-  },
-  // id: '1234',
+const val: Partial<P> = {
+  email: 'a23sd@asd.com',
+  birthday: '2019-01-06T13:42:07.892Z',
 };
 
-const rs = Person.validate(val, [
-  ...iots.getDefaultContext(Person),
-  {
-    key: 'GLOBAL_VALUE',
-    type: val,
-  } as any,
-]);
+const rs = Person.validate(
+  val,
+  iots.appendContext(
+    iots.getDefaultContext(Person),
+    'GLOBAL_VALUE',
+    {
+      ...iots.any.asDecoder(),
+      name: JSON.stringify(val),
+    },
+  ),
+);
 
 if (rs.isLeft()) {
   console.log('error', (rs.value));
 } else {
   console.log((rs.value));
+  console.log(Person.encode(rs.value));
 }
